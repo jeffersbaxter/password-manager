@@ -30,7 +30,7 @@ def save():
     website_text = website_input.get()
     email_text = email_input.get()
     password_text = password_input.get()
-    print(website_text == "")
+
     if website_text == "" or email_text == "" or password_text == "":
         messagebox.showinfo(message="Please don't leave any fields empty!")
         return
