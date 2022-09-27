@@ -1,3 +1,4 @@
+import json
 from tkinter import *
 from tkinter import messagebox
 from random import choice, randint, shuffle
@@ -27,23 +28,37 @@ def generate_password():
 
 
 def save():
-    website_text = website_input.get()
-    email_text = email_input.get()
-    password_text = password_input.get()
+    website = website_input.get()
+    email = email_input.get()
+    password = password_input.get()
+    new_data = {
+        website: {
+            "email": email,
+            "password": password
+        }
+    }
 
-    if website_text == "" or email_text == "" or password_text == "":
+    if website == "" or password == "":
         messagebox.showinfo(message="Please don't leave any fields empty!")
         return
+    else:
+        try:
+            with open("data.json", "r") as read_file:
+                # Reading old data
+                data = json.load(read_file)
+        except FileNotFoundError:
+            with open("data.json", "w") as created_file:
+                json.dump(new_data, created_file, indent=4)
+        else:
+            # Updating old data with new data
+            data.update(new_data)
 
-    validation_msg = f"These are the details entered: \nEmail: {email_text}\nPassword: {password_text}\n Is it OK to save?"
-    is_ok = messagebox.askokcancel(title=website_text, message=validation_msg)
-
-    if is_ok:
-        with open("data.txt", "a") as data:
-            data.write(f"{website_text} | {email_text} | {password_text}\n")
-        website_input.delete(0, END)
-        email_input.delete(0, END)
-        password_input.delete(0, END)
+            with open("data.json", "w") as update_file:
+                #Saving updated data
+                json.dump(data, update_file, indent=4)
+        finally:
+            website_input.delete(0, END)
+            password_input.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
